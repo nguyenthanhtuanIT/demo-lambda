@@ -1,0 +1,42 @@
+version: '2'
+services:
+  # container for API
+  api:
+    image: kun391/phpup:1.2
+    container_name: api
+    ports:
+      - 9000:80
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/app
+    environment:
+      - PHP_MEM_LIMIT=-1
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: user123
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 9029:80
+    depends_on:
+      - db
+    environment:
+      PMA_HOSTS: db
+      PMA_USER: dbuser
+      PMA_PASSWORD: user123
+  localstack:
+    image: localstack/localstack:0.11.0
+    ports:
+      - "4566-4583:4566-4583"
+    environment:
+      - SERVICES=s3,lambda
+      - EDGE_PORT=4566
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
