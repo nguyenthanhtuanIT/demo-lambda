@@ -35,10 +35,6 @@ class PhotoController extends Controller
     public function store(Request $request)
     {
         $path = Storage::disk('s3')->put('files/originals', $request->file, 'public');
-//        $request->merge([
-//            'size' => $request->file->getClientSize(),
-//            'path' => $path
-//        ]);
         return response()->json(['status' => 200]);
     }
 
